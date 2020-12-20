@@ -4,7 +4,8 @@ export class JsonSchemaValidator implements Validator {
   constructor(private readonly ajv: Ajv) {}
 
   validate(arg: ValidateArg) {
-    const isValid = this.ajv.validate(arg.paramMeta.name, arg.data);
+    const schema = `#/definitions/${arg.paramMeta.name}`;
+    const isValid = this.ajv.validate(schema, arg.data);
     if (isValid) {
       return arg.data;
     }

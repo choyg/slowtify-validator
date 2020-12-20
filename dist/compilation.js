@@ -44,8 +44,12 @@ function compileSchemas(files) {
     if (!schemas) {
         throw new Error("Failed to retrieve generated schemas");
     }
+    const namespaced = Object.entries(schemas).reduce((acc, [schema, def]) => {
+        acc[`#/definitions/${schema}`] = def;
+        return acc;
+    }, {});
     const ajv = new ajv_1.default({
-        schemas,
+        schemas: namespaced,
         removeAdditional: "all",
         validateSchema: true,
         validateFormats: true,

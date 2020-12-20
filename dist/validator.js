@@ -7,7 +7,8 @@ class JsonSchemaValidator {
         this.ajv = ajv;
     }
     validate(arg) {
-        const isValid = this.ajv.validate(arg.paramMeta.name, arg.data);
+        const schema = `#/definitions/${arg.paramMeta.name}`;
+        const isValid = this.ajv.validate(schema, arg.data);
         if (isValid) {
             return arg.data;
         }

@@ -1,4 +1,4 @@
-import Ajv from "ajv";
+import Ajv, { AnySchema } from "ajv";
 import addFormats from "ajv-formats";
 import * as TJS from "typescript-json-schema";
 
@@ -23,9 +23,15 @@ export function compileSchemas(files: string[]): Ajv {
   if (!schemas) {
     throw new Error("Failed to retrieve generated schemas");
   }
+  const namespaced = Object.entries(schemas).reduce<{
+    [key: string]: AnySchema;
+  }>((acc, [schema, def]) => {
+    acc[`#/definitions/${schema}`] = def;
+    return acc;
+  }, {});
 
   const ajv = new Ajv({
-    schemas,
+    schemas: namespaced,
     removeAdditional: "all",
     validateSchema: true,
     validateFormats: true,
